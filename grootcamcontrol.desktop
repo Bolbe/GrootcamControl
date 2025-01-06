@@ -2,5 +2,5 @@
 Type=Application
 Name=GrootcamControl
 Comment=Control GrootCam actuators
-Icon=grootcam
+Icon=grootcam256
 Categories=Utility;

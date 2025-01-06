@@ -12,6 +12,9 @@ $QT_PATH/bin/qmake .. && make -j
 echo "Creating package folder..."
 mkdir -p package
 cp ./GrootcamControl package/GrootcamControl
+cp ../grootcam256.png package/grootcam256.png
+cp ../AppRun package/AppRun
+cp ../grootcamcontrol.desktop package/grootcamcontrol.desktop
 
 echo "Copying shared libraries to lib folder..."
 mkdir -p package/lib
@@ -54,9 +57,11 @@ echo "Changing runtime path to ./lib"
 chrpath -r ./lib/ package/GrootcamControl
 
 mv package Grootcam
-echo "Compressing folder to GrootcamControl.tar.xz"
-XZ_OPT='-9' tar -cJf Grootcam.tar.xz Grootcam
-mv Grootcam.tar.xz ..
+wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+chmod +x appimagetool-x86_64.AppImage
+echo "Packaging application with appimagetool..."
+./appimagetool-x86_64.AppImage Grootcam grootcam.AppImage
+mv grootcam.AppImage ..
 
 cd ..
 
