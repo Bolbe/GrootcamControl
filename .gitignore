@@ -2,3 +2,5 @@ build/*
 package/*
 
 .DS_Store
+
+grootcam.AppImage

@@ -2,7 +2,6 @@ TARGET = GrootcamControl
 TEMPLATE = app
 
 QT += network qml quick
-CONFIG += c++11
 
 unix:!macx {
     QMAKE_LFLAGS += -no-pie
