@@ -5,23 +5,29 @@ on:
     tags:
       - '*'
 
-env: 
+env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  linux: 
-    uses: Bolbe/github-build-tools/.github/workflows/qt-build-linux.yml@main 
-    with: 
-      app_name: GrootcamControl
-      artifact_name: grootcamcontrol
-  
-  windows: 
-    uses: Bolbe/github-build-tools/.github/workflows/qt-build-windows.yml@main 
-    with: 
-      exe_name: GrootcamControl.exe
-      artifact_name: grootcamcontrol
 
-  macos: 
-    uses: Bolbe/github-build-tools/.github/workflows/qt-build-macos.yml@main 
-    with: 
+  linux-static:
+    uses: Bolbe/github-build-tools/.github/workflows/qt-build-static-linux.yml@main
+    with:
       app_name: GrootcamControl
+
+  # linux:
+  #   uses: Bolbe/github-build-tools/.github/workflows/qt-build-linux.yml@main
+  #   with:
+  #     app_name: GrootcamControl
+  #     artifact_name: grootcamcontrol
+
+  # windows:
+  #   uses: Bolbe/github-build-tools/.github/workflows/qt-build-windows.yml@main
+  #   with:
+  #     exe_name: GrootcamControl.exe
+  #     artifact_name: grootcamcontrol
+
+  # macos:
+  #   uses: Bolbe/github-build-tools/.github/workflows/qt-build-macos.yml@main
+  #   with:
+  #     app_name: GrootcamControl
