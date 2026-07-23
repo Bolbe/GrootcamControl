@@ -1,9 +1,19 @@
 name: Build release packages
 
 on:
-  push:
-    tags:
-      - '*'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Which build to run'
+        required: true
+        default: 'linux'
+        type: choice
+        options:
+          - linux-static
+          - macos-static
+          - linux
+          - macos
+          - windows
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -11,23 +21,33 @@ env:
 jobs:
 
   linux-static:
+    if: ${{ inputs.target == 'linux-static' }}
     uses: Bolbe/github-build-tools/.github/workflows/qt-build-static-linux.yml@main
     with:
       app_name: GrootcamControl
 
-  # linux:
-  #   uses: Bolbe/github-build-tools/.github/workflows/qt-build-linux.yml@main
-  #   with:
-  #     app_name: GrootcamControl
-  #     artifact_name: grootcamcontrol
+  linux:
+    if: ${{ inputs.target == 'linux' }}
+    uses: Bolbe/github-build-tools/.github/workflows/qt-build-linux.yml@main
+    with:
+      app_name: GrootcamControl
+      artifact_name: grootcamcontrol
 
-  # windows:
-  #   uses: Bolbe/github-build-tools/.github/workflows/qt-build-windows.yml@main
-  #   with:
-  #     exe_name: GrootcamControl.exe
-  #     artifact_name: grootcamcontrol
+  windows:
+    if: ${{ inputs.target == 'windows' }}
+    uses: Bolbe/github-build-tools/.github/workflows/qt-build-windows.yml@main
+    with:
+      exe_name: GrootcamControl.exe
+      artifact_name: grootcamcontrol
 
-  # macos:
-  #   uses: Bolbe/github-build-tools/.github/workflows/qt-build-macos.yml@main
-  #   with:
-  #     app_name: GrootcamControl
+  macos:
+    if: ${{ inputs.target == 'macos'  }}
+    uses: Bolbe/github-build-tools/.github/workflows/qt-build-macos.yml@main
+    with:
+      app_name: GrootcamControl
+
+  macos-static:
+    if: ${{ inputs.target == 'macos-static' }}
+    uses: Bolbe/github-build-tools/.github/workflows/qt-build-static-macos.yml@main
+    with:
+      app_name: GrootcamControl
