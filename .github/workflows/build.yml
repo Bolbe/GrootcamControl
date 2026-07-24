@@ -23,7 +23,7 @@ jobs:
 
   linux-static:
     if: ${{ inputs.target == 'linux-static' }}
-    uses: Bolbe/github-build-tools/.github/workflows/qt-build-static-linux.yml@main
+    uses: Bolbe/github-build-tools/.github/workflows/build-app-static-linux.yml@main
     with:
       app_name: GrootcamControl
 
