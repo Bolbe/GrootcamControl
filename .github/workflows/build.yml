@@ -10,7 +10,8 @@ on:
         type: choice
         options:
           - linux-static
-          - macos-static
+          - macos-static-x86_64
+          - macos-static-arm64
           - linux
           - macos
           - windows
@@ -46,8 +47,16 @@ jobs:
     with:
       app_name: GrootcamControl
 
-  macos-static:
-    if: ${{ inputs.target == 'macos-static' }}
-    uses: Bolbe/github-build-tools/.github/workflows/qt-build-static-macos.yml@main
+  macos-static-x86_64:
+    if: ${{ inputs.target == 'macos-static-x86_64' }}
+    uses: Bolbe/github-build-tools/.github/workflows/build-app-static-macos.yml@main
     with:
       app_name: GrootcamControl
+      chipset: x86_64
+
+  macos-static-arm64:
+    if: ${{ inputs.target == 'macos-static-arm64' }}
+    uses: Bolbe/github-build-tools/.github/workflows/build-app-static-macos.yml@main
+    with:
+      app_name: GrootcamControl
+      chipset: arm64
