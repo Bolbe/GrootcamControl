@@ -22,6 +22,8 @@ env:
 jobs:
   linux:
     if: ${{ inputs.target == 'linux-dynamic' }}
+    permissions:
+      contents: write
     uses: Bolbe/github-build-tools/.github/workflows/build-app-dynamic-linux.yml@main
     with:
       app_name: GrootcamControl
