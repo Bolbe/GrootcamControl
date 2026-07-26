@@ -22,7 +22,48 @@ env:
 jobs:
   linux:
     if: ${{ inputs.target == 'linux-dynamic' }}
-    uses: Bolbe/github-build-tools/.github/workflows/build-app-dynamic-linux.yml@main
-    with:
-      app_name: GrootcamControl
-      artifact_name: grootcamcontrol
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout shared tools
+        uses: actions/checkout@v4
+        with:
+          repository: Bolbe/github-build-tools
+          path: build-tools
+
+      - name: Copy app icon to build-tools scripts directory
+        run: cp default-icon.svg build-tools/scripts/applications/default-icon.svg
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            chrpath libxkbcommon-x11-dev mesa-common-dev \
+            freeglut3 freeglut3-dev libglu1-mesa libglu1-mesa-dev \
+            libgl1 libgl1-mesa-dev
+
+      - name: Download and extract Qt
+        working-directory: ${{ runner.temp }}
+        run: |
+          URL="https://github.com/Bolbe/github-build-tools/releases/download/qt-6.5.3-dynamic-ubuntu2204/Qt6.5.3-dynamic-ubuntu2204.tar.xz"
+          if ! curl -fL -o qt.tar.xz "$URL"; then
+            echo "::error::Qt tarball not found at $URL"
+            echo "::error::Run 'Build Qt 6.5.3 Dynamic' manually in Bolbe/github-build-tools first."
+            exit 1
+          fi
+          tar xf qt.tar.xz
+
+      - name: Build
+        working-directory: ${{ github.workspace }}
+        env:
+          QT_PATH: ${{ runner.temp }}/Qt6.5.3-dynamic
+        run: |
+          bash ./build-tools/scripts/applications/build-linux-app.sh GrootcamControl grootcamcontrol
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grootcamcontrol-linux
+          path: ${{ github.workspace }}/grootcamcontrol.AppImage
