@@ -14,14 +14,33 @@ jobs:
       app_name: GrootcamControl
       artifact_name: grootcamcontrol
 
-  windows:
-    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-windows.yml@main
-    with:
-      exe_name: GrootcamControl.exe
-      artifact_name: grootcamcontrol
+  release-ubuntu:
+    needs: ubuntu
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: grootcamcontrol-linux
+          path: dist
 
-  macos:
-    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-macos.yml@main
-    with:
-      app_name: GrootcamControl
-      runner: macos-14 # macos-15-intel
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: GrootcamControl ${{ github.run_number }}
+          files: dist/**
+
+  # windows:
+  #   uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-windows.yml@main
+  #   with:
+  #     exe_name: GrootcamControl.exe
+  #     artifact_name: grootcamcontrol
+
+  # macos:
+  #   uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-macos.yml@main
+  #   with:
+  #     app_name: GrootcamControl
+  #     runner: macos-14 # macos-15-intel
