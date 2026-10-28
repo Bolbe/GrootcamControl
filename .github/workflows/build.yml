@@ -14,33 +14,52 @@ jobs:
       app_name: GrootcamControl
       artifact_name: grootcamcontrol
 
-  release-ubuntu:
-    needs: ubuntu
+  windows:
+    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-windows.yml@main
+    with:
+      exe_name: GrootcamControl.exe
+      artifact_name: grootcamcontrol
+
+  macos:
+    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-macos.yml@main
+    with:
+      app_name: GrootcamControl
+      runner: macos-14 # macos-15-intel
+
+  release:
+    needs: [ubuntu, windows, macos]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download artifact
+      - name: Download Linux artifact
         uses: actions/download-artifact@v4
         with:
           name: grootcamcontrol-linux
-          path: dist
+          path: dist/linux
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: grootcamcontrol-windows
+          path: dist/windows
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: GrootcamControl-macos
+          path: dist/macos
+
+      - name: Prepare release files
+        run: |
+          mkdir release
+          cp dist/linux/grootcamcontrol.AppImage release/
+          cp dist/macos/GrootcamControl.app.zip release/GrootcamControl-macos.zip
+          (cd dist/windows && zip -r ../../release/GrootcamControl-windows.zip .)
 
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
           name: GrootcamControl ${{ github.run_number }}
-          files: dist/**
-
-  # windows:
-  #   uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-windows.yml@main
-  #   with:
-  #     exe_name: GrootcamControl.exe
-  #     artifact_name: grootcamcontrol
-
-  # macos:
-  #   uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-macos.yml@main
-  #   with:
-  #     app_name: GrootcamControl
-  #     runner: macos-14 # macos-15-intel
+          files: release/*
