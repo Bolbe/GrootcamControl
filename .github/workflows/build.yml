@@ -1,28 +1,27 @@
-name: Build Applications
+name: Build release packages
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: 'Which build to run'
-        required: true
-        default: 'linux-dynamic'
-        type: choice
-        options:
-          - linux-dynamic
-          - linux-static
-          - macos-static-x86_64
-          - macos-static-arm64
-          - macos
-          - windows
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  linux:
-    if: ${{ inputs.target == 'linux-dynamic' }}
-    uses: Bolbe/github-build-tools/.github/workflows/build-app-dynamic-linux.yml@main
+
+  ubuntu:
+    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-linux.yml@main
     with:
       app_name: GrootcamControl
       artifact_name: grootcamcontrol
+
+  windows:
+    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-windows.yml@main
+    with:
+      exe_name: GrootcamControl.exe
+      artifact_name: grootcamcontrol
+
+  macos:
+    uses: Bolbe/github-build-tools/.github/workflows/build-qt-app-macos.yml@main
+    with:
+      app_name: GrootcamControl
+      runner: macos-14 # macos-15-intel
